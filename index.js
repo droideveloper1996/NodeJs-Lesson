@@ -16,7 +16,7 @@ app.get("/getList", function (req, res) {
   const post = [
     { id: 1, title: "Do Exercise" },
     { id: 2, title: "Brush Your teeth" },
-    { id: 3, title: "Bunk Mathur sir class" },
+    { id: 3, title: "College Daily aao" },
     { id: 4, title: "Do Lunch" },
     { id: 5, title: "Have Coffee" },
     { id: 6, title: "Return to Home" },
