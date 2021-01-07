@@ -6,17 +6,22 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
-const PORT = "5000";
+const PORT = process.env.PORT || 5000;
 
 /**
  * GET, POST, PATCH, PUT, DELETE
  */
 //Route /abc
-app.get("/abc", function (req, res) {
-  const post = {
-    post: "this is some post",
-    id: 6568,
-  };
+app.get("/getList", function (req, res) {
+  const post = [
+    { id: 1, title: "Do Exercise" },
+    { id: 2, title: "Brush Your teeth" },
+    { id: 3, title: "Bunk Mathur sir class" },
+    { id: 4, title: "Do Lunch" },
+    { id: 5, title: "Have Coffee" },
+    { id: 6, title: "Return to Home" },
+  ];
+
   return res.status(200).json(post);
 });
 
