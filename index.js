@@ -1,7 +1,11 @@
 const express = require("express");
 const cors = require("cors");
+const mongoose = require("mongoose");
 const app = express();
 
+const { TodosSchema } = require("./schema/todos");
+
+//mongoose
 //Middleware
 app.use(express.json());
 app.use(cors());
@@ -12,17 +16,23 @@ const PORT = process.env.PORT || 5000;
  * GET, POST, PATCH, PUT, DELETE
  */
 //Route /abc
-app.get("/getList", function (req, res) {
-  const post = [
-    { id: 1, title: "Do Exercise" },
-    { id: 2, title: "Brush Your teeth" },
-    { id: 3, title: "College Daily aao" },
-    { id: 4, title: "Do Lunch" },
-    { id: 5, title: "Have Coffee" },
-    { id: 6, title: "Return to Home" },
-  ];
 
-  return res.status(200).json(post);
+mongoose.connect(
+  "mongodb+srv://todo:aGpb1hoqu5x5zrrc@cluster0.99x8m.mongodb.net/Todo?retryWrites=true&w=majority",
+  { useNewUrlParser: true },
+  (err) => {
+    if (err) throw err;
+    else console.log("Connected to Database");
+  }
+);
+
+app.get("/getList", async (req, res) => {
+  try {
+    const result = await TodosSchema.findOne({ title: "this is some detail" });
+    return res.status(200).json(result);
+  } catch (e) {
+    return res.status(400).json({ message: "Failed Fetching data" });
+  }
 });
 
 app.get("/abc/:id", function (req, res) {
@@ -35,25 +45,42 @@ app.get("/test", (req, res) => {
   return res.send("Server ka response dusra tarika");
 });
 
-app.post("/post", (req, res) => {
-  const body = req.body;
-  console.log(body.sid.length);
-  /** Validation  */
-  if (
-    body.name.length === 0 ||
-    body.branch.length === 0 ||
-    body.sid.length === 0
-  ) {
-    console.log("Invalid Data");
-    //Status Code
-    return res.status(400).json({ message: "Kam data bheja hai yrr!!" });
-  } else {
-    //** We can save on server */
-    console.log("Valid Data");
-    return res.status(200).json({ message: "Data a gya mere pas from server" });
-  }
+// app.post("/post", (req, res) => {
+//   const body = req.body;
+//   console.log(body.sid.length);
+//   /** Validation  */
+//   if (
+//     body.name.length === 0 ||
+//     body.branch.length === 0 ||
+//     body.sid.length === 0
+//   ) {
+//     console.log("Invalid Data");
+//     //Status Code
+//     return res.status(400).json({ message: "Kam data bheja hai yrr!!" });
+//   } else {
+//     //** We can save on server */
+//     console.log("Valid Data");
+//     return res.status(200).json({ message: "Data a gya mere pas from server" });
+//   }
 
-  //body
+//   //body
+// });
+
+app.post("/post", async (req, res) => {
+  const title = req.body.title;
+  const description = req.body.description;
+
+  const todo = new TodosSchema({
+    title: title,
+    description: description,
+  });
+
+  try {
+    const result = await todo.save();
+    return res.status(200).json(result);
+  } catch (e) {
+    return res.status(400).json({ message: "Error has occured" });
+  }
 });
 
 app.get("/testingApiKey/key/:apikey", async (req, res) => {
